@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@svgr/webpack": "^6.5.1",
     "@thirdweb-dev/react": "^3.6.7",
     "@thirdweb-dev/sdk": "^3.6.7",
     "ethers": "^5.7.2",
