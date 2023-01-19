@@ -1,9 +1,16 @@
+import { ethers } from 'ethers';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import CustomButton from '../components/CustomButton';
 import FormField from '../components/FormField';
+import { useApiContext } from '../context';
+import { checkIfImage } from '../utils';
 
 const CreateCampaign: NextPage = () => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const { createCampaign } = useApiContext();
   const [form, setForm] = useState({
     name: '',
     title: '',
@@ -19,7 +26,17 @@ const CreateCampaign: NextPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
+    checkIfImage(form.image, async (exists) => {
+      if (exists) {
+        setIsLoading(true);
+        await createCampaign({ ...form, target: ethers.utils.parseUnits(form.target, 18) });
+        setIsLoading(false);
+        router.push('/');
+      } else {
+        alert('Provide valid image URL');
+        setForm({ ...form, image: '' });
+      }
+    });
   };
 
   return (

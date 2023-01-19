@@ -2,13 +2,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { navlinks } from '../constants';
+import { useApiContext } from '../context';
 import CustomButton from './CustomButton';
 
 const Navbar = () => {
   const router = useRouter();
   const [isActive, setIsActive] = useState('dashboard');
   const [toggleDrawer, setToggleDrawer] = useState(false);
-  // const { connect, address } = useStateContext();
+  const { connect, address } = useApiContext();
 
   return (
     <div className='flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6'>
@@ -25,14 +26,15 @@ const Navbar = () => {
       </div>
 
       <div className='flex-row justify-end hidden gap-4 sm:flex'>
-        {/* <CustomButton
+        <CustomButton
           btnType='button'
           title={address ? 'Create a campaign' : 'Connect'}
           styles={address ? 'bg-[#1dc071]' : 'bg-[#8c6dfd]'}
           handleClick={() => {
             if (address) router.push('create-campaign');
+            else connect();
           }}
-        /> */}
+        />
 
         <Link href={'/profile'}>
           <div className='w-[52px] h-[52px] rounded-full bg-[#2c2f32] flex justify-center items-center cursor-pointer'>
@@ -85,7 +87,7 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
-          {/* 
+
           <div className='flex mx-4'>
             <CustomButton
               btnType='button'
@@ -93,9 +95,10 @@ const Navbar = () => {
               styles={address ? 'bg-[#1dc071]' : 'bg-[#8c6dfd]'}
               handleClick={() => {
                 if (address) router.push('create-campaign');
+                else connect();
               }}
             />
-          </div> */}
+          </div>
         </div>
       </div>
     </div>
