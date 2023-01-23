@@ -2,14 +2,15 @@ import { createContext, FC, ReactNode, useContext } from 'react';
 import { useAddress, useContract, useMetamask, useContractWrite } from '@thirdweb-dev/react';
 import { BaseContract, ethers } from 'ethers';
 import { SmartContract } from '@thirdweb-dev/sdk';
+import { ICampaign } from '../types';
 
 export type apiContextType = {
   address: string | undefined;
   contract: SmartContract<BaseContract> | undefined;
   connect: () => void;
   createCampaign: (form: any) => Promise<void>;
-  getCampaigns: () => void;
-  getUserCampaigns: () => void;
+  getCampaigns: () => Promise<ICampaign[]>;
+  getUserCampaigns: () => Promise<ICampaign[]>;
   donate: (pId: any, amount: any) => Promise<any>;
   getDonations: (pId: any) => Promise<
     {
@@ -19,18 +20,13 @@ export type apiContextType = {
   >;
 };
 
-interface Test {
-  donaitor: any;
-  das: string;
-}
-
 const apiContextDefaultValues: apiContextType = {
   address: '',
   contract: undefined,
   connect: () => {},
   createCampaign: (form: any) => Promise.resolve(),
-  getCampaigns: () => {},
-  getUserCampaigns: () => {},
+  getCampaigns: () => Promise.resolve([]),
+  getUserCampaigns: () => Promise.resolve([]),
   donate: (pId: any, amount: any) => Promise.resolve(),
   getDonations: (pId: any) => Promise.resolve([]),
 };
@@ -65,10 +61,10 @@ export const ApiProvider: FC<Props> = ({ children }) => {
     }
   };
 
-  const getCampaigns = async () => {
+  const getCampaigns = async (): Promise<ICampaign[]> => {
     const campaigns = await contract?.call('getCampaigns');
 
-    const parsedCampaings = campaigns.map((campaign, i) => ({
+    const parsedCampaigns = campaigns.map((campaign, i) => ({
       owner: campaign.owner,
       title: campaign.title,
       description: campaign.description,
@@ -79,10 +75,10 @@ export const ApiProvider: FC<Props> = ({ children }) => {
       pId: i,
     }));
 
-    return parsedCampaings;
+    return parsedCampaigns;
   };
 
-  const getUserCampaigns = async () => {
+  const getUserCampaigns = async (): Promise<ICampaign[]> => {
     const allCampaigns = await getCampaigns();
 
     const filteredCampaigns = allCampaigns.filter((campaign) => campaign.owner === address);
