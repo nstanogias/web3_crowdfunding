@@ -5,6 +5,7 @@ import CountBox from '../../components/CountBox';
 import { useApiContext } from '../../context';
 import { calculateBarPercentage, daysLeft } from '../../utils';
 import { useRouter } from 'next/router';
+import Loader from '../../components/Loader';
 
 const CampaignDetails = () => {
   const router = useRouter();
@@ -36,6 +37,7 @@ const CampaignDetails = () => {
 
   return (
     <div>
+      {isLoading && <Loader />}
       <div className='w-full flex md:flex-row flex-col mt-10 gap-[30px]'>
         <div className='flex-col flex-1'>
           <img src={query.image as string} alt='campaign' className='w-full h-[410px] object-cover rounded-xl' />
