@@ -1,5 +1,5 @@
 import { createContext, FC, ReactNode, useContext } from 'react';
-import { useAddress, useContract, useMetamask, useContractWrite } from '@thirdweb-dev/react';
+import { useAddress, useContract, useMetamask, useContractWrite, useDisconnect } from '@thirdweb-dev/react';
 import { BaseContract, ethers } from 'ethers';
 import { SmartContract } from '@thirdweb-dev/sdk';
 import { ICampaign } from '../types';
@@ -8,6 +8,7 @@ export type apiContextType = {
   address: string | undefined;
   contract: SmartContract<BaseContract> | undefined;
   connect: () => void;
+  disconnect: () => void;
   createCampaign: (form: any) => Promise<void>;
   getCampaigns: () => Promise<ICampaign[]>;
   getUserCampaigns: () => Promise<ICampaign[]>;
@@ -24,6 +25,7 @@ const apiContextDefaultValues: apiContextType = {
   address: '',
   contract: undefined,
   connect: () => {},
+  disconnect: () => {},
   createCampaign: (form: any) => Promise.resolve(),
   getCampaigns: () => Promise.resolve([]),
   getUserCampaigns: () => Promise.resolve([]),
@@ -38,11 +40,12 @@ type Props = {
 };
 
 export const ApiProvider: FC<Props> = ({ children }) => {
-  const { contract } = useContract('0xf59A1f8251864e1c5a6bD64020e3569be27e6AA9');
+  const { contract } = useContract('0x9060b410fFef418c05703F6e50f861AE2F5d9a31');
   const { mutateAsync: createCampaign } = useContractWrite(contract, 'createCampaign');
 
   const address = useAddress();
   const connect = useMetamask();
+  const disconnect = useDisconnect();
 
   const publishCampaign = async (form) => {
     try {
@@ -114,6 +117,7 @@ export const ApiProvider: FC<Props> = ({ children }) => {
         address,
         contract,
         connect,
+        disconnect,
         createCampaign: publishCampaign,
         getCampaigns,
         getUserCampaigns,

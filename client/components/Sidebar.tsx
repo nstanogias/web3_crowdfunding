@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import React, { FC, useState } from 'react';
 import { navlinks } from '../constants';
 import Link from 'next/link';
+import { useApiContext } from '../context';
 
 interface IconProps {
   styles?: string;
@@ -27,6 +28,7 @@ const Icon: FC<IconProps> = ({ styles, name, imgUrl, isActive, disabled, handleC
 );
 
 const Sidebar = () => {
+  const { disconnect } = useApiContext();
   const router = useRouter();
   const [isActive, setIsActive] = useState('dashboard');
 
@@ -44,7 +46,9 @@ const Sidebar = () => {
               {...link}
               isActive={isActive}
               handleClick={() => {
-                if (!link.disabled) {
+                if (link.name === 'logout') {
+                  disconnect();
+                } else {
                   setIsActive(link.name);
                   router.push(link.link);
                 }
